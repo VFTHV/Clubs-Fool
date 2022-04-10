@@ -1,0 +1,25 @@
+{
+  "name": "08_clubs_fool",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script - Copy.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VFTHV/Clubs-Fool.git"
+  },
+  "keywords": [
+    "Clubs",
+    "Fool",
+    "Card",
+    "Game"
+  ],
+  "author": "Vadim Fattakhov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VFTHV/Clubs-Fool/issues"
+  },
+  "homepage": "https://github.com/VFTHV/Clubs-Fool#readme"
+}
