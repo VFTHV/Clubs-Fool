@@ -1,0 +1,5 @@
+1. moved deck to gameData object
+2. changed const cardSuits to Object.freeze({different suits: "xxx"})
+3. Used push method while creating deck
+4. changed some array methods. E.g. splice(0,1) to shift()
+5. corrected turns bug after players # (length-1-1) wins
