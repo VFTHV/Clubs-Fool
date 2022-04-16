@@ -16,8 +16,8 @@ const gameData = {
 //     gameData.players.push(`player${i+1}`);
 // }
 
-// const cardOrder = [6, 7, 8, 9, 10, 11, 12, 13, 14];
-const cardOrder = [6, 7, 8];
+const cardOrder = [6, 7, 8, 9, 10, 11, 12, 13, 14];
+// const cardOrder = [6, 7, 8, 9];
 /*
     const SUITS = Object.freeze({
         HEARTS: 'hearts',
@@ -28,10 +28,10 @@ const cardOrder = [6, 7, 8];
 // const cardSuits = ['hearts', 'spades', 'diamonds', 'clubs'];
 
 const cardSuits = Object.freeze({
-    // hearts: 'hearts',
+    hearts: 'hearts',
     spades: 'spades',
     diamonds: 'diamonds',
-    // clubs: 'clubs'
+    clubs: 'clubs'
 })
 
 // const deck = [];
@@ -120,62 +120,57 @@ function updateTableAndTurn() {
 
         document.getElementById('take-card').setAttribute('class', 'hidden');
 
-        setTimeout(function () {
-            gameData.table = [];
-            // clear table and cta
+        // setTimeout(function () {
+        //     gameData.table = [];
+        //     // clear table and cta
 
-            gameData.players.forEach(function (eachPlayer) {
+        //     gameData.players.forEach(function (eachPlayer) {
 
-                document.getElementById(`${eachPlayer}Card`).innerHTML = '';
-                document.querySelector(`#${eachPlayer}-cta span`).setAttribute('class', 'hidden');
+        //         document.getElementById(`${eachPlayer}Card`).innerHTML = '';
+        //         document.querySelector(`#${eachPlayer}-cta span`).setAttribute('class', 'hidden');
 
+        //     });
+
+        //     checkWinningCondition();
+        //     setTimeout(function () {
+        //         updateCTA();
+        //         gamePlay();
+        //     }, 0);
+        // }, 2000);
+
+        const finishTurn = () => {
+            return new Promise((resolve)=>{
+
+                setTimeout(() => {
+                    gameData.table = [];
+                    // clear table and cta
+        
+                    gameData.players.forEach(function (eachPlayer) {
+        
+                        document.getElementById(`${eachPlayer}Card`).innerHTML = '';
+                        document.querySelector(`#${eachPlayer}-cta span`).setAttribute('class', 'hidden');
+        
+                    });
+                    checkWinningCondition();
+    
+                    resolve();
+                }, 2000);
+                
             });
-
-            checkWinningCondition();
-            setTimeout(function () {
+        }
+        finishTurn()
+            .then( () => {
                 updateCTA();
                 gamePlay();
-            }, 0);
-        }, 2000);
+                }
+            );
 
-
-        // const updatePromise = new Promise(function (resolve) {
-        //     setTimeout(() => {
-        //         gameData.table = [];
-        //         gameData.players.forEach(function (eachPlayer){
-
-        //             document.getElementById(`${eachPlayer}Card`).innerHTML = '';
-        //             document.querySelector(`#${eachPlayer}-cta span`).setAttribute('class', 'hidden');
-
-        //         });
-        //         checkWinningCondition();
-        //     }, 2000);       
-
-        // })
-
-        // updatePromise.then(updateCTA).then(gamePlay);
-
-        /*
-            // 1) create a funciton, call it timer
-            // 2) the function takes a delay, in ms
-            // 3) inside of the function we create a promise which holds a setTimeout
-            // 4) we return the promise which resolves in `delay`
-            // MDN https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Promise
-
-            awaitTimer(1000) // retuns Promise
-            .then(function() {
-                //
-                return awaitTimer(0)
-            })
-            .then()
-        */
 
     }
     else {
-        gameData.turn++;
-        gameData.turn = gameData.turn % gameData.players.length;
+        changeTurn();
         checkWinningCondition();
-        console.log(gameData.turn+1);
+
         comments.innerHTML = `It is player ${gameData.players[gameData.turn]} turn`;
 
         updateCTA();
@@ -186,25 +181,19 @@ function updateTableAndTurn() {
 function checkWinningCondition() {
 
     if (gameData.table.length === 0) {
-        // if winning player was last to go, then turn++
-        // if winning player was in the middle of the turn 
-        const wonPlayersIndex = [];
 
         gameData.players.forEach(function (player, index) {
             // if one player wins, 3rd player's turn shifts
             if (gameData[player].length === 0) {
-                if (player == 'player3'){
-                    gameData.turn++;
-                    gameData.turn%=gameData.players.length;
-                }
-
+                
                 const playerWon = alert(`${player} has WON!!!`)
                 gameData.players.splice(index, 1);
-
-
-
-
-
+                
+                // if (player == 'player3'){
+                //     debugger;
+                //     gameData.turn++;
+                //     gameData.turn%=gameData.players.length;
+                // }
             }
             if (gameData.players.length === 1) {
                 const looserMessage = alert(`${gameData.players[0]} is a LOOSER!!!`);
@@ -217,6 +206,15 @@ function checkWinningCondition() {
         });
 
     }
+}
+
+function changeTurn () {
+    //      if this player has beaten the cards
+    //  if this player is also player #3 then turn===0
+
+    gameData.turn++;
+    gameData.turn = gameData.turn % gameData.players.length;
+    console.log(gameData.turn+1);
 }
 
 function determineFirstTurn() {
@@ -288,21 +286,44 @@ function prepareCurrentTurn() {
 
             eachCard.addEventListener('click', function () {
 
-                async function addHTML() {
-                    // await doesn't work because push() doesn't return a Promise;
-                    const updateHTML = await gameData.table.push(gameData[gameData.players[gameData.turn]][cardIndex]);
-                    const splice = await gameData[gameData.players[gameData.turn]].splice(cardIndex, 1);
-                    updatePlayer(gameData.players[gameData.turn]);
+                // async function addHTML() {
+                //     // await doesn't work because push() doesn't return a Promise;
+                //     const updateHTML = await gameData.table.push(gameData[gameData.players[gameData.turn]][cardIndex]);
+                //     const splice = await gameData[gameData.players[gameData.turn]].splice(cardIndex, 1);
+                //     updatePlayer(gameData.players[gameData.turn]);
+
+                // }
+
+                // use awaitTimer here
+                // setTimeout(function () {
+                //     addHTML();
+                //     setTimeout(function () {
+                //         updateTableAndTurn();
+                //     }, 0);
+
+                // }, 0);
+
+                const addHTML = () => {
+                    return new Promise((resolve)=>{   
+                        gameData.table.push(gameData[gameData.players[gameData.turn]][cardIndex]);
+                        resolve();
+                    });
 
                 }
-                // use awaitTimer here
-                setTimeout(function () {
-                    addHTML();
-                    setTimeout(function () {
-                        updateTableAndTurn();
-                    }, 0);
 
-                }, 0);
+                addHTML()
+                    .then(()=>{
+                        gameData[gameData.players[gameData.turn]].splice(cardIndex, 1);
+                        return 'Good'
+                    })
+                    .then(()=>{
+                        updatePlayer(gameData.players[gameData.turn]);
+                        return 'Good';
+                    })
+                    .then(()=>{
+                        updateTableAndTurn();
+                    })
+
             });
 
         }
@@ -351,30 +372,34 @@ function gamePlay() {
             document.getElementById('take-card').addEventListener('click', ()=>{
                 gameData.table[0].player = gameData.players[gameData.turn];
                 gameData[gameData.players[gameData.turn]].push(gameData.table[0]);
-                /*
-                    awaitTimer(100)
-                    .then(()=> {
-                        //  gameData.table.splice(0, 1);
-                        return awaitTimer(100) 
-                    })
-                    .then(()=> {
-                        // updatePlayer(gameData.players[gameData.turn]);
-                            return awaitTimer(100) 
-                    })
 
-                */
-                setTimeout(function () {
-                    gameData.table.shift();
-                    setTimeout(function () {
+                // setTimeout(function () {
+                //     gameData.table.shift();
+                //     setTimeout(function () {
+                //         updatePlayer(gameData.players[gameData.turn]);
+
+                //         setTimeout(function () {
+                //             updateTableAndTurn();
+                //             // checkWinningCondition();
+
+                //         }, 0);
+                //     }, 0);
+                // }, 0);
+
+                const sequenceFunction = () => {
+                    return new Promise((resolve)=>{
+                        gameData.table.shift();
+                        resolve();
+                    });
+                }
+                sequenceFunction()
+                    .then(()=>{
                         updatePlayer(gameData.players[gameData.turn]);
-
-                        setTimeout(function () {
-                            updateTableAndTurn();
-                            // checkWinningCondition();
-
-                        }, 0);
-                    }, 0);
-                }, 0);
+                        return 'Good';
+                    })
+                    .then(()=>{
+                        updateTableAndTurn();
+                    })
             });
         }
     }
