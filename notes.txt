@@ -1,5 +1,36 @@
-1. moved deck to gameData object
-2. changed const cardSuits to Object.freeze({different suits: "xxx"})
-3. Used push method while creating deck
-4. changed some array methods. E.g. splice(0,1) to shift()
-5. corrected turns bug after players # (length-1-1) wins
+Игра 'Крестовый Дурак'. Правила вкратце:
+1. Буби всегда козырь.
+2. Крести бьются только крестями всегда. Буби не могут бить крести 
+3. Игроки бьют карты по кругу.
+4. Если карт на столе, столько, сколько и игроков - БИТО. Побивший игрок заходит опять
+5. Если не можешь бить верхнюю карту, берешь нижнюю карту на столе 
+
+===================file script.js in the root ============================
+1. moved deck to gameData object (line 7)
+2. changed const cardSuits to Object.freeze({different suits: "xxx"}) (line 42)
+3. Used push method while creating deck (line 63)
+4. changed some array methods. E.g. splice(0,1) to shift() (line 442)
+5. changed setTimeout to Promises in 3 places (lines 182, 202, 365)
+====================================================================================
+Isolated the file with bug
+
+Bug is in the file ./old/2022-04-16_script.js Bug was following: 
+    a. If the player wins, then it is spliced out from gameData.players array. However, if it is a last player (player3 in this case), then after being removed from array, in some cases system sets turn to this player, but this player doesn't exist anymore. 
+    b. It happens when player 2 takes last card from table and then it's player3's turn. But because checkWinningCondition() splices this player, then program cannot find it.
+        It also happens when player 3 beats the cards and has no more cards, and there are 3 cards on table (карты биты), then system doesn't change turns. But checkWinningCondition() splices this player away.
+    c. Because these players are removed from array, the turn should '++'. But adding turn++ on different places breaks other conditions
+======================================================================================
+
+7. I corrected this bug today. Corrected file is script.js in root folder. I used following solutions:
+    a.  added gameData.winner array with all 3 values === false. false === player not won yet, true === player already won the game.
+    b.  checkWinningCondition() does not splice players anymore. It checks if player ran out of cards and not won yet (line 231), then it changes it's corresponding false value to true and alerts a winners message.
+    c.  created a conditionalChangeTurn() which checks if current player has already won, then turn++
+    d. this type of solution also requires tracking number of players in different way, since gameData.players.length does not change. Number or players is required to determine when the cards are beaten (карты биты).
+        I created closure function numOfPlayers() which counts number of players. You can see this function in action on lines 140, 240.
+
+    e. this solution has one minor bug:
+        - when checkWinningCondition() line 240 is triggered, the program keeps running giving a lot of looser messages. But it's end of game here.
+        - One player needs to loose all the game. In order to play game quick I use line 32 instead of 31 and comment out lines 43 and 46
+        - I need all program to stop. That is why I applied 'return' on line 251.
+
+8. Added new feature. To see it in action, please uncomment lines 112, 116-121.

@@ -2,7 +2,6 @@
 
 const gameData = {
     players: ['player1', 'player2', 'player3'],
-    winner: [false, false, false],
     turn: 0,
     deck: [ /* {suit: "type of suit", value: Number, image: link} */],
     player1: [ /* {suit: "type of suit", value: Number, image: link, player: "player1"} */],
@@ -11,25 +10,14 @@ const gameData = {
     table: []
 }
 
-// let numOfPlayers = gameData.players.length;
+// const numOfPlayers = prompt('Please enter number of players');
 
-const numOfPlayers = () => {
-    let counter = 0;
-    
-    const counterFunction = () => {
-        gameData.winner.forEach((eachWinner)=>{
-            if (!eachWinner) {
-                counter++;
-            }
-            
-        });
-        return counter;
-    }
-    return counterFunction();
-};
+// for (let i=0; i<numOfPlayers; i++) {
+//     gameData.players.push(`player${i+1}`);
+// }
 
-const cardOrder = [6, 7, 8, 9, 10, 11, 12, 13, 14];
-// const cardOrder = [6, 7, 8, 9];
+// const cardOrder = [6, 7, 8, 9, 10, 11, 12, 13, 14];
+const cardOrder = [6, 7, 8, 9];
 /*
     const SUITS = Object.freeze({
         HEARTS: 'hearts',
@@ -40,10 +28,10 @@ const cardOrder = [6, 7, 8, 9, 10, 11, 12, 13, 14];
 // const cardSuits = ['hearts', 'spades', 'diamonds', 'clubs'];
 
 const cardSuits = Object.freeze({
-    hearts: 'hearts',
+    // hearts: 'hearts',
     spades: 'spades',
     diamonds: 'diamonds',
-    clubs: 'clubs'
+    // clubs: 'clubs'
 })
 
 // const deck = [];
@@ -87,7 +75,7 @@ function dealCards() {
     }
 }
 
-function  updatePlayer(player) {
+function updatePlayer(player) {
     let sortedBySuit = [];
     let sortedDeck = [];
     // sort all cards by suits and values
@@ -109,10 +97,10 @@ function  updatePlayer(player) {
     gameData[player] = sortedDeck;
     document.getElementById(player).innerHTML = '';
     
+    gameData[player].forEach(function (eachCard) {
+        document.getElementById(player).innerHTML += `<li><img src=${eachCard.image}></li>`;
+    });
     // if (player === gameData.players[gameData.turn]) {
-        gameData[player].forEach(function (eachCard) {
-            document.getElementById(player).innerHTML += `<li><img src=${eachCard.image}></li>`;
-        });
     // }
     // else {
     //     gameData[player].forEach(function (eachCard) {
@@ -137,7 +125,7 @@ function updateTableAndTurn() {
         tableCard.style.zIndex = cardIndex;
     });
 
-    if (gameData.table.length === numOfPlayers()) {
+    if (gameData.table.length === gameData.players.length) {
 
         document.getElementById('take-card').setAttribute('class', 'hidden');
 
@@ -180,10 +168,6 @@ function updateTableAndTurn() {
             });
         }
         finishTurn()
-            .then(()=>{
-                conditionalChangeTurn();
-                return 'Good';
-            })
             .then( () => {
                 updateCTA();
                 gamePlay();
@@ -201,11 +185,7 @@ function updateTableAndTurn() {
         }
         sequenceFunction()
             .then(()=>{
-                gameData.turn++;
-                gameData.turn %=  gameData.players.length;
-                
-                console.log(gameData.turn+1);
-                conditionalChangeTurn();
+                changeTurn();
             })
             .then(()=>{
 
@@ -227,25 +207,18 @@ function checkWinningCondition() {
     if (gameData.table.length === 0) {
 
         gameData.players.forEach(function (player, index) {
-            
-            if ( (gameData[player].length === 0) && (gameData.winner[index] == false) ) {
-
-                gameData.winner[index] = true;
+            // if one player wins, 3rd player's turn shifts
+            if (gameData[player].length === 0) {
                 
                 const playerWon = alert(`${player} has WON!!!`)
-                // gameData.players.splice(index, 1);
+                gameData.players.splice(index, 1);
 
 
             }
-            if (numOfPlayers() === 1) {
-
-                gameData.winner.forEach((eachWinner, index)=>{
-                    if (!eachWinner) {
-                        const looserMessage = alert(`${gameData.players[index]} is a LOOSER!!!`);
-                    }
-                });
-                // gameData[gameData.players[index]] = [];
-                // updatePlayer(gameData.players[index]);
+            if (gameData.players.length === 1) {
+                const looserMessage = alert(`${gameData.players[0]} is a LOOSER!!!`);
+                gameData[gameData.players[0]] = [];
+                updatePlayer(gameData.players[0]);
                 clearCTA();
                 document.getElementById('take-card').setAttribute('class', 'hidden');
                 return;
@@ -255,18 +228,18 @@ function checkWinningCondition() {
     }
 }
 
-function conditionalChangeTurn () {
+function changeTurn () {
 
-    if (gameData.winner[gameData.turn]) {
-        gameData.turn++;
-        gameData.turn %=  gameData.players.length;
-    }
+    gameData.turn++;
+    gameData.turn %=  gameData.players.length;
+    
+    console.log(gameData.turn+1);
 
-    if (gameData[`player${gameData.turn+1}`].length == 0) {
-        gameData.turn++;
-        gameData.turn %=  gameData.players.length;
-        console.log(gameData.turn+1);
-    }
+    // if (gameData[`player${gameData.turn+1}`].length == 0) {
+    //     gameData.turn++;
+    //     gameData.turn %=  gameData.players.length;
+    //     console.log(gameData.turn+1);
+    // }
 
 }
 

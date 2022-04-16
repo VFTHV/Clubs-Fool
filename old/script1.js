@@ -101,7 +101,7 @@ function updateTableAndTurn() {
             cardZIndex++;
         }
     }
-    prepareCurrentTurn();
+    // prepareFirstTurn();
      
 }
 
@@ -124,20 +124,21 @@ function determineFirstTurn() {
 }
 
 function prepareCurrentTurn() {
-    // add class - current-turn
-    // add class
-    // querySelectorAll for "can-beat" class
-    const currentTurnCards = document.querySelectorAll(`#game-control #player${gameData.turn+1} li`);
-    currentTurnCards.forEach(function(eachCard, cardIndex){
-        eachCard.setAttribute('class', 'current-turn');
 
+    const currentTurnCards = document.querySelectorAll(`#game-control #player${gameData.turn+1} li`);
+    currentTurnCards.forEach(function(eachCard){
+        eachCard.classList.add('current-turn');
+    });
+
+    const canBeat = document.querySelectorAll('.can-beat');
+    
+    canBeat.forEach(function(eachCard, cardIndex){
         eachCard.addEventListener('click', function(){
 
             async function addHTML () {
                 const updateHTML = await gameData.table.push(gameData[`player${gameData.turn+1}`][cardIndex]);
                 const splice = await gameData[`player${gameData.turn+1}`].splice(cardIndex,1);
-                updatePlayer(`player${gameData.turn+1}`);
-                
+                updatePlayer(`player${gameData.turn+1}`);               
             }
             
             setTimeout(function(){
@@ -148,8 +149,7 @@ function prepareCurrentTurn() {
                         gamePlay();
                     },0);
                 },0);
-                
-            },0);
+            },0);  
         });
     });
 
@@ -160,7 +160,7 @@ function findStrongerCards () {
     
     if (gameData.table.length === 0) {
 
-
+        
 
         // document.querySelectorAll(`#game-control #player${gameData.turn+1} li`).forEach(function(eachCard){
         //     eachCard.classList.add('can-beat');
@@ -177,30 +177,19 @@ function findStrongerCards () {
     // if diamonds - only higher diamonds
 }
 
-createDeck();
-
-dealCards();
-
-updatePlayer('player1');
-updatePlayer('player2');
-updatePlayer('player3');
-
-determineFirstTurn();
-
-prepareCurrentTurn();
-
-console.log(`It is player ${gameData.turn+1} turn`);
-
-let cardZIndex = 0;
-
 function gamePlay() {
 
     if (gameData.table.length === 0) {
-        // add class 'current turn' to all cards
-        const allCards = document.querySelectorAll(`#game-control #player${gameData.turn+1} li`);
         // add class 'can-beat' to all cards
+        const allCards = document.querySelectorAll(`#game-control #player${gameData.turn+1} li`);
+        allCards.forEach(function(eachCard){
+            eachCard.classList.add('can-beat');
+        });
+
+        prepareCurrentTurn();
+        
         // prepare current turn
-        // 
+
         // after click remove all classes from all cards
         // change turn
         // gamePlay()
@@ -230,3 +219,23 @@ function gamePlay() {
     }
 
 }
+
+createDeck();
+
+dealCards();
+
+updatePlayer('player1');
+updatePlayer('player2');
+updatePlayer('player3');
+
+determineFirstTurn();
+
+// prepareCurrentTurn();
+
+console.log(`It is player ${gameData.turn+1} turn`);
+
+let cardZIndex = 0;
+
+gamePlay();
+
+
