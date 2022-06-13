@@ -109,16 +109,16 @@ function  updatePlayer(player) {
     gameData[player] = sortedDeck;
     document.getElementById(player).innerHTML = '';
     
-    // if (player === gameData.players[gameData.turn]) {
+    if (player === gameData.players[gameData.turn]) {
         gameData[player].forEach(function (eachCard) {
             document.getElementById(player).innerHTML += `<li><img src=${eachCard.image}></li>`;
         });
-    // }
-    // else {
-    //     gameData[player].forEach(function (eachCard) {
-    //         document.getElementById(player).innerHTML += `<li><img src='images/back.png'></li>`;
-    //     });
-    // }
+    }
+    else {
+        gameData[player].forEach(function (eachCard) {
+            document.getElementById(player).innerHTML += `<li><img src='images/back.png'></li>`;
+        });
+    }
 
 }
 
