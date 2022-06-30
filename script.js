@@ -195,9 +195,7 @@ function updateTableAndTurn() {
           updatePlayer(eachPlayer);
         });
 
-        comments.innerHTML = `It is player ${
-          gameData.players[gameData.turn]
-        } turn`;
+        comments.innerHTML = `It is ${gameData.players[gameData.turn]} turn`;
         updateCTA();
         gamePlay();
       });
